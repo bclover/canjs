@@ -4689,7 +4689,22 @@ steal("can-simple-dom", "can/util/vdom/build_fragment","can/view/stache", "can/v
 			data.attr('items.0.name', 'dave');
 
 			equal(frag.firstChild.nextSibling.getAttribute('value'), 'user text');
-         });
+    });
+
+
+    test("content within {{#if}} inside partial surrounded by {{#if}} should not display outside partial (#2186)", function() {
+      can.view.registerView('partial', '{{#if showHiddenSection}}<div>Hidden</div>{{/if}}');
+      var renderer = can.stache('{{#if showPartial}}{{>partial}}{{/if}}');
+      var data = new can.Map({
+        showPartial: true,
+          showHiddenSection: false
+      });
+      var frag = renderer(data);
+      data.attr('showHiddenSection', true);
+      data.attr('showPartial', false);
+
+      equal( innerHTML(frag), '');
+    });
 
 		// PUT NEW TESTS RIGHT BEFORE THIS!
 	}
